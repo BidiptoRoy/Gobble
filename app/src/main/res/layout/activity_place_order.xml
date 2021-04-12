@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PlaceOrderActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/placeOrderToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="Place Order"/>
+    <TextView
+        android:layout_below="@id/placeOrderToolBar"
+        android:id="@+id/placeOrderResName"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:text="Ordering from Taco Bell"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="228dp"
+        android:layout_height="113dp"
+        android:layout_below="@id/placeOrderResName"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPlaceOrder"
+        android:layout_below="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_margin="5dp"
+        android:layout_above="@id/btnConfirmOder"/>
+    <Button
+        android:id="@+id/btnConfirmOder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/roundbutton"
+        android:layout_margin="10dp"
+
+
+        android:drawableLeft="@drawable/ic_baseline_attach_money_24"
+        android:text="CONFIRM ORDER"
+        android:gravity="center_horizontal|center_vertical"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    <RelativeLayout
+        android:id="@+id/placeOrderProgressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/img"
+        android:layout_above="@id/btnConfirmOder"
+        android:background="#fff">
+        <ProgressBar
+            android:id="@+id/placeOrderProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

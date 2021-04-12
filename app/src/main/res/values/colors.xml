@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFA600</color>
+    <color name="colorPrimaryDark">#FF7000</color>
+    <color name="colorAccent">#FF3200</color>
+    <color name="notFav">#7C7B77</color>
+    <color name="addToCart">#20FA02</color>
+    <color name="cardColor">#F9ED7C</color>
+</resources>

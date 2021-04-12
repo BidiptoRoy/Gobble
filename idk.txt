@@ -1,0 +1,464 @@
+class HomeFragment : Fragment() {
+
+    private lateinit var recyclerRestaurant: RecyclerView
+    private lateinit var allRestaurantsAdapter: AllRestaurantsAdapter
+    private var restaurantList = arrayListOf<Restaurants>()
+    private lateinit var progressBar: ProgressBar
+    private lateinit var rlLoading: RelativeLayout
+    private var checkedItem: Int = -1
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        (activity as DrawerLocker).setDrawerEnabled(true)
+        progressBar = view?.findViewById(R.id.progressBar) as ProgressBar
+        rlLoading = view.findViewById(R.id.rlLoading) as RelativeLayout
+        rlLoading.visibility = View.VISIBLE
+
+        /*A separate method for setting up our recycler view*/
+        setUpRecycler(view)
+
+        setHasOptionsMenu(true)
+
+        return view
+    }
+
+    private fun setUpRecycler(view: View) {
+        recyclerRestaurant = view.findViewById(R.id.recyclerRestaurants) as RecyclerView
+
+        /*Create a queue for sending the request*/
+        val queue = Volley.newRequestQueue(activity as Context)
+
+
+        /*Check if the internet is present or not*/
+        if (ConnectionManager().isNetworkAvailable(activity as Context)) {
+
+            /*Create a JSON object request*/
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Request.Method.GET,
+                FETCH_RESTAURANTS,
+                null,
+                Response.Listener<JSONObject> {
+                    rlLoading.visibility = View.GONE
+
+                    /*Once response is obtained, parse the JSON accordingly*/
+                    try {
+                        val data = it.getJSONObject("data")
+                        val success = data.getBoolean("success")
+                        if (success) {
+                            val resArray = data.getJSONArray("data")
+                            for (i in 0 until resArray.length()) {
+                                val resObject = resArray.getJSONObject(i)
+                                val restaurant = Restaurants(
+                                    resObject.getString("id").toInt(),
+                                    resObject.getString("name"),
+                                    resObject.getString("rating"),
+                                    resObject.getString("cost_for_one").toInt(),
+                                    resObject.getString("image_url")
+                                )
+                                restaurantList.add(restaurant)
+                                if (activity != null) {
+                                    allRestaurantsAdapter =
+                                        AllRestaurantsAdapter(restaurantList, activity as Context)
+                                    val mLayoutManager = LinearLayoutManager(activity)
+                                    recyclerRestaurant.layoutManager = mLayoutManager
+                                    recyclerRestaurant.itemAnimator = DefaultItemAnimator()
+                                    recyclerRestaurant.adapter = allRestaurantsAdapter
+                                    recyclerRestaurant.setHasFixedSize(true)
+                                }
+
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                },
+                Response.ErrorListener { error: VolleyError? ->
+                    Toast.makeText(activity as Context, error?.message, Toast.LENGTH_SHORT).show()
+                }) {
+
+                /*Send the headers using the below method*/
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Content-type"] = "application/json"
+
+                    /*The below used token will not work, kindly use the token provided to you in the training*/
+                    headers["token"] = "39002895dd98c0"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+
+        } else {
+            val builder = AlertDialog.Builder(activity as Context)
+            builder.setTitle("Error")
+            builder.setMessage("No Internet Connection found. Please connect to the internet and re-open the app.")
+            builder.setCancelable(false)
+            builder.setPositiveButton("Ok") { _, _ ->
+                ActivityCompat.finishAffinity(activity as Activity)
+            }
+            builder.create()
+            builder.show()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        activity?.menuInflater?.inflate(R.menu.dashboard_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.action_sort -> showDialog(context as Context)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDialog(context: Context) {
+
+        val builder: AlertDialog.Builder? = AlertDialog.Builder(context)
+        builder?.setTitle("Sort By?")
+        builder?.setSingleChoiceItems(R.array.filters, checkedItem) { _, isChecked ->
+            checkedItem = isChecked
+        }
+
+        builder?.setPositiveButton("Ok") { _, _ ->
+
+            when (checkedItem) {
+                0 -> {
+                    Collections.sort(restaurantList, Sorter.costComparator)
+                }
+                1 -> {
+                    Collections.sort(restaurantList, Sorter.costComparator)
+                    restaurantList.reverse()
+                }
+                2 -> {
+                    Collections.sort(restaurantList, Sorter.ratingComparator)
+                    restaurantList.reverse()
+                }
+            }
+            allRestaurantsAdapter.notifyDataSetChanged()
+        }
+        builder?.setNegativeButton("Cancel") { _, _ ->
+
+        }
+        builder?.create()
+        builder?.show()
+    }
+
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+I
+Satyajit Pradhan
+•
+Instructor
+•
+9 weeks ago
+adapter :
+
+
+class AllRestaurantsAdapter(private var restaurants: ArrayList<Restaurants>, val context: Context) :
+    RecyclerView.Adapter<AllRestaurantsAdapter.AllRestaurantsViewHolder>() {
+
+
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AllRestaurantsViewHolder {
+        val itemView = LayoutInflater.from(p0.context)
+            .inflate(R.layout.restaurants_custom_row, p0, false)
+
+        return AllRestaurantsViewHolder(itemView)
+    }
+
+    override fun getItemCount(): Int {
+        return restaurants.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+
+    override fun onBindViewHolder(p0: AllRestaurantsViewHolder, p1: Int) {
+        val resObject = restaurants.get(p1)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            p0.resThumbnail.clipToOutline = true
+        }
+        p0.restaurantName.text = resObject.name
+        p0.rating.text = resObject.rating
+        val costForTwo = "${resObject.costForTwo.toString()}/person"
+        p0.cost.text = costForTwo
+        Picasso.get().load(resObject.imageUrl).error(R.drawable.res_image).into(p0.resThumbnail)
+
+
+        val listOfFavourites = GetAllFavAsyncTask(context).execute().get()
+
+        if (listOfFavourites.isNotEmpty() && listOfFavourites.contains(resObject.id.toString())) {
+            p0.favImage.setImageResource(R.drawable.ic_action_fav_checked)
+        } else {
+            p0.favImage.setImageResource(R.drawable.ic_action_fav)
+        }
+
+        p0.favImage.setOnClickListener {
+            val restaurantEntity = RestaurantEntity(
+                resObject.id,
+                resObject.name,
+                resObject.rating,
+                resObject.costForTwo.toString(),
+                resObject.imageUrl
+            )
+
+            if (!DBAsyncTask(context, restaurantEntity, 1).execute().get()) {
+                val async =
+                    DBAsyncTask(context, restaurantEntity, 2).execute()
+                val result = async.get()
+                if (result) {
+                    p0.favImage.setImageResource(R.drawable.ic_action_fav_checked)
+                }
+            } else {
+                val async = DBAsyncTask(context, restaurantEntity, 3).execute()
+                val result = async.get()
+
+                if (result) {
+                    p0.favImage.setImageResource(R.drawable.ic_action_fav)
+                }
+            }
+        }
+
+        p0.cardRestaurant.setOnClickListener {
+            val fragment = RestaurantFragment()
+            val args = Bundle()
+            args.putInt("id", resObject.id as Int)
+            args.putString("name", resObject.name)
+            fragment.arguments = args
+            val transaction =
+                (context as FragmentActivity).supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame, fragment)
+            transaction.commit()
+            (context as AppCompatActivity).supportActionBar?.title =
+                p0.restaurantName.text.toString()
+        }
+    }
+
+    class AllRestaurantsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val resThumbnail = view.findViewById(R.id.imgRestaurantThumbnail) as ImageView
+        val restaurantName = view.findViewById(R.id.txtRestaurantName) as TextView
+        val rating = view.findViewById(R.id.txtRestaurantRating) as TextView
+        val cost = view.findViewById(R.id.txtCostForTwo) as TextView
+        val cardRestaurant = view.findViewById(R.id.cardRestaurant) as CardView
+        val favImage = view.findViewById(R.id.imgIsFav) as ImageView
+    }
+
+    class DBAsyncTask(context: Context, val restaurantEntity: RestaurantEntity, val mode: Int) :
+        AsyncTask<Void, Void, Boolean>() {
+
+        val db = Room.databaseBuilder(context, RestaurantDatabase::class.java, "res-db").build()
+
+        override fun doInBackground(vararg params: Void?): Boolean {
+
+            /*
+            Mode 1 -> Check DB if the book is favourite or not
+            Mode 2 -> Save the book into DB as favourite
+            Mode 3 -> Remove the favourite book
+            */
+
+            when (mode) {
+
+                1 -> {
+                    val res: RestaurantEntity? =
+                        db.restaurantDao().getRestaurantById(restaurantEntity.id.toString())
+                    db.close()
+                    return res != null
+                }
+
+                2 -> {
+                    db.restaurantDao().insertRestaurant(restaurantEntity)
+                    db.close()
+                    return true
+                }
+
+                3 -> {
+                    db.restaurantDao().deleteRestaurant(restaurantEntity)
+                    db.close()
+                    return true
+                }
+            }
+
+            return false
+        }
+
+    }
+
+
+    /*Since the outcome of the above background method is always a boolean, we cannot use the above here.
+    * We require the list of favourite restaurants here and hence the outcome would be list.
+    * For simplicity we obtain the list of restaurants and then extract their ids which is then compared to the ids
+    * inside the list sent to the adapter */
+
+    class GetAllFavAsyncTask(
+        context: Context
+    ) :
+        AsyncTask<Void, Void, List<String>>() {
+
+        val db = Room.databaseBuilder(context, RestaurantDatabase::class.java, "res-db").build()
+        override fun doInBackground(vararg params: Void?): List<String> {
+
+            val list = db.restaurantDao().getAllRestaurants()
+            val listOfIds = arrayListOf<String>()
+            for (i in list) {
+                listOfIds.add(i.id.toString())
+            }
+            return listOfIds
+        }
+    }
+
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class LoginActivity : AppCompatActivity() {
+
+    /*Declaring all the views present in the activity_login.xml file*/
+    lateinit var etMobileNumber: EditText
+    lateinit var etPassword: EditText
+    lateinit var btnLogin: Button
+    lateinit var txtForgotPassword: TextView
+    lateinit var txtRegisterYourself: TextView
+
+    /*Variables used in managing the login session*/
+    lateinit var sessionManager: SessionManager
+    lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+
+        /*Initialising the views*/
+        etMobileNumber = findViewById(R.id.etMobileNumber)
+        etPassword = findViewById(R.id.etPassword)
+        btnLogin = findViewById(R.id.btnLogin)
+        txtForgotPassword = findViewById(R.id.txtForgotPassword)
+        txtRegisterYourself = findViewById(R.id.txtRegisterYourself)
+
+        /*Initialising the session variables*/
+        sessionManager = SessionManager(this)
+        sharedPreferences =
+            this.getSharedPreferences(sessionManager.PREF_NAME, Context.MODE_PRIVATE)
+
+        /*Clicking on this text takes you to the forgot password activity*/
+        txtForgotPassword.setOnClickListener {
+            startActivity(Intent(this@LoginActivity, ForgotPasswordActivity::class.java))
+        }
+
+        /*Clicking on this text takes you to the forgot password activity*/
+        txtRegisterYourself.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        /*Start the login process when the user clicks on the login button*/
+        btnLogin.setOnClickListener {
+
+            /*Hide the login button when the process is going on*/
+            btnLogin.visibility = View.INVISIBLE
+
+            /*First validate the mobile number and password length*/
+            if (Validations.validateMobile(etMobileNumber.text.toString()) && Validations.validatePasswordLength(etPassword.text.toString())) {
+                if (ConnectionManager().isNetworkAvailable(this@LoginActivity)) {
+
+                    /*Create the queue for the request*/
+                    val queue = Volley.newRequestQueue(this@LoginActivity)
+
+                    /*Create the JSON parameters to be sent during the login process*/
+                    val jsonParams = JSONObject()
+                    jsonParams.put("mobile_number", etMobileNumber.text.toString())
+                    jsonParams.put("password", etPassword.text.toString())
+
+
+                    /*Finally send the json object request*/
+                    val jsonObjectRequest = object : JsonObjectRequest(Method.POST, LOGIN, jsonParams,
+                        Response.Listener {
+
+                            try {
+                                val data = it.getJSONObject("data")
+                                val success = data.getBoolean("success")
+                                if (success) {
+                                    val response = data.getJSONObject("data")
+                                    sharedPreferences.edit()
+                                        .putString("user_id", response.getString("user_id")).apply()
+                                    sharedPreferences.edit()
+                                        .putString("user_name", response.getString("name")).apply()
+                                    sharedPreferences.edit()
+                                        .putString(
+                                            "user_mobile_number",
+                                            response.getString("mobile_number")
+                                        )
+                                        .apply()
+                                    sharedPreferences.edit()
+                                        .putString("user_address", response.getString("address"))
+                                        .apply()
+                                    sharedPreferences.edit()
+                                        .putString("user_email", response.getString("email")).apply()
+                                    sessionManager.setLogin(true)
+                                    startActivity(
+                                        Intent(
+                                            this@LoginActivity,
+                                            DashboardActivity::class.java
+                                        )
+                                    )
+                                    finish()
+                                } else {
+                                    btnLogin.visibility = View.VISIBLE
+                                    txtForgotPassword.visibility = View.VISIBLE
+                                    btnLogin.visibility = View.VISIBLE
+                                    val errorMessage = data.getString("errorMessage")
+                                    Toast.makeText(
+                                        this@LoginActivity,
+                                        errorMessage,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } catch (e: JSONException) {
+                                btnLogin.visibility = View.VISIBLE
+                                txtForgotPassword.visibility = View.VISIBLE
+                                txtRegisterYourself.visibility = View.VISIBLE
+                                e.printStackTrace()
+                            }
+                        },
+                        Response.ErrorListener {
+                            btnLogin.visibility = View.VISIBLE
+                            txtForgotPassword.visibility = View.VISIBLE
+                            txtRegisterYourself.visibility = View.VISIBLE
+                            Log.e("Error::::", "/post request fail! Error: ${it.message}")
+                        }) {
+                        override fun getHeaders(): MutableMap<String, String> {
+                            val headers = HashMap<String, String>()
+                            headers["Content-type"] = "application/json"
+
+                            /*The below used token will not work, kindly use the token provided to you in the training*/
+                            headers["token"] = "TOKEN"
+                            return headers
+                        }
+                    }
+                    queue.add(jsonObjectRequest)
+
+                } else {
+                    btnLogin.visibility = View.VISIBLE
+                    txtForgotPassword.visibility = View.VISIBLE
+                    txtRegisterYourself.visibility = View.VISIBLE
+                    Toast.makeText(this@LoginActivity, "No internet Connection", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                btnLogin.visibility = View.VISIBLE
+                txtForgotPassword.visibility = View.VISIBLE
+                txtRegisterYourself.visibility = View.VISIBLE
+                Toast.makeText(this@LoginActivity, "Invalid Phone or Password", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+    }
+}
+
+
+

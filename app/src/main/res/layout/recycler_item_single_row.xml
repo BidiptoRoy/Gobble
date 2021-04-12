@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/historyItemContent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="10">
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="-"
+        android:textSize="40sp"
+        android:gravity="center_horizontal|center_vertical"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"/>
+    <TextView
+        android:id="@+id/historyItemName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:text="Sach Me Burger"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:gravity="center_vertical"/>
+    <TextView
+        android:id="@+id/historyItemCost"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:text="Rs. 100"
+        android:gravity="center_horizontal|center_vertical"
+        android:textColor="#229922"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+
+
+
+</LinearLayout>

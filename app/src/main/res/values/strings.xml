@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Gobble</string>
+    <string name="home">Home</string>
+    <string name="my_profile">My Profile</string>
+    <string name="favourites_restaurants">Favourites Restaurants</string>
+    <string name="order_history">Order History</string>
+    <string name="faqs">FAQs</string>
+    <string name="log_out">Log Out</string>
+    <string name="open_Drawer">Open Drawer</string>
+    <string name="close_Drawer">Open Drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Phone Number</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in </string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="preference_file_name">"Gobble"</string>
+    <string name="sort">Sort</string>
+    <string name="a1">The developer of the app is Bidipto Roy , a student of Jadavpur University . I live in Kolkata .I love to eat , I am a great foodie , so making this app was real fun</string>
+    <string name="q1">Who is the developer of this app ?</string>
+    <string name="q2">What are my interests ?</string>
+    <string name="a2">My interests include a lot of amazing stuffs . I like to make projects like these , I am learning android development
+    and I want to learn more and build more projects . Apart from that I don\'t mind practising coding , I code normally in Java . I have also tried learning Data Science , learned R ,data-visualization .</string>
+    <string name="q3">What technologies are used to make this app ?</string>
+    <string name="a3">This app is made using Kotlin . I have used libraries Volley ,Picasso ; used Room wrapper for storing data . I have used Relative , Linear ,Constraint layouts mainly for the UI .The app is made using fragments and activity to better
+        user experience .</string>
+    <string name="q4">What are my other hobbies?</string>
+    <string name="a4">I have my own youtube channel with the name "Bidipto Roy".I make videos for college students , so If you are reading this you can subscribe to my channel , I will upload some cool stuffs .
+    I have also started writing blogs on mind set of people , its fun ! I also like to edit photos and videos .I love to eat .I am a huge cricket fan .
+    I also like watching meaningful movies and I have started reading some books and I would love to build that habit in me to read .</string>
+    <string name="q5">What are my future goals ?</string>
+    <string name="a5">In this period of lock down I have changed a lot . Now I want to explore new domains , try out new things ,
+        take risks and give my best in what ever I am doing .</string>
+
+</resources>

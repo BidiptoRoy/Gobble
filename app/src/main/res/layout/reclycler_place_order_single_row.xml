@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:weightSum="10"
+    android:id="@+id/placeOrderContent">
+    <TextView
+
+        android:id="@+id/placeOrderItemCount"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="10."
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/colorAccent" />
+    <TextView
+        android:id="@+id/placeOrderItemName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:text="Khabhi burger kabhi garger"
+        android:padding="5dp"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:textColor="#000000"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/placeOrderItemPrice"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:text="Rs. 100"
+        android:textSize="16sp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#229922"/>
+
+
+
+</LinearLayout>

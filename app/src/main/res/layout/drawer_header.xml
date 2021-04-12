@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@color/colorPrimary">
+    <androidx.cardview.widget.CardView
+        android:layout_margin="10dp"
+        android:layout_width="155dp"
+        android:layout_height="155dp"
+        app:cardCornerRadius="250dp"
+        app:cardBackgroundColor="#fff">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:cardCornerRadius="250dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+
+                app:srcCompat="@drawable/logo" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/showName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome"
+        android:layout_margin="10dp"
+        android:textColor="#fff"
+        android:textSize="30sp"
+        android:padding="5dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/showNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Good food unites people !"
+        android:layout_marginLeft="10dp"
+        android:textColor="#fff"
+        android:textSize="15sp"
+        android:padding="5dp"
+        android:textStyle="bold"/>
+
+</LinearLayout>
