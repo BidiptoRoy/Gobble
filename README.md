@@ -4,5 +4,9 @@ Order history and favourites are stored using database
 
 Here is a video to demonstrate the working
 
-https://user-images.githubusercontent.com/65190593/177744821-8110fd2f-5dc2-48e9-9469-e76772c52700.mp4
+
+
+
+
+https://user-images.githubusercontent.com/65190593/177745407-1edb5761-7ee8-4be2-894d-e25bcff0090f.mp4
 
